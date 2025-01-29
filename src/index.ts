@@ -1,4 +1,10 @@
-import { Client, GatewayIntentBits, EmbedBuilder } from "discord.js";
+import {
+    Client,
+    GatewayIntentBits,
+    EmbedBuilder,
+    TextChannel,
+    AttachmentBuilder,
+} from "discord.js";
 
 const client = new Client({
     intents: [
@@ -8,32 +14,54 @@ const client = new Client({
     ],
 });
 
-client.on("ready", () => {
+client.on("ready", async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
+
+    const rulesChannel = client.channels.cache.get(
+        Deno.env.get("RULES_CHANNEL_ID")!
+    ) as TextChannel;
+
+    const rulesEmbed = new EmbedBuilder()
+        .setColor(0xff0000)
+        .setTitle("Hamster Care Guide (꜆ ՞︲⩊︲՞꜀)")
+        .setDescription(
+            `
+1. Follow Discord TOS
+2. Be kind and respectful
+3. Do not rant or vent
+4. No NSFW
+`
+        )
+        .setFooter({
+            text: "Make sure to read carefully and follow these steps!",
+        });
+
+    await rulesChannel.send({ embeds: [rulesEmbed] });
 });
 
 client.on("guildMemberAdd", async (member) => {
-    const channel = member.guild.channels.cache.get(
+    const welcomeChannel = member.guild.channels.cache.get(
         Deno.env.get("WELCOME_CHANNEL_ID")!
-    );
+    ) as TextChannel;
 
-    if (!channel?.isTextBased()) return;
+    const attachment = new AttachmentBuilder("images/banner.png", {
+        name: "banner.png",
+    });
 
     const welcomeEmbed = new EmbedBuilder()
-        .setColor(0x00ff00)
+        .setColor(0xee1166)
         .setTitle(`Welcome ${member.user.username}!`)
-        .setThumbnail(member.user.displayAvatarURL())
         .setDescription(
             `
-      Thanks for joining **${member.guild.name}**!
-      - Read the rules in <#${Deno.env.get("RULES_CHANNEL_ID")}>
-      - Get roles in <#${Deno.env.get("ROLES_CHANNEL_ID")}>
-      - Member count: ${member.guild.memberCount}
-    `
+Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
+- Please read the rules in <#${Deno.env.get("RULES_CHANNEL_ID")}>
+- Collect roles in <#${Deno.env.get("ROLES_CHANNEL_ID")}>
+`
         )
-        .setFooter({ text: "Enjoy your stay!" });
+        .setImage("attachment://banner.png")
+        .setFooter({ text: "Have fun!" });
 
-    await channel.send({ embeds: [welcomeEmbed] });
+    await welcomeChannel.send({ embeds: [welcomeEmbed], files: [attachment] });
 });
 
 client.login(Deno.env.get("TOKEN"));
