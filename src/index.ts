@@ -14,6 +14,8 @@ const client = new Client({
     ],
 });
 
+const REACTION_EMOJI = "✅";
+
 client.on("ready", async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
 
@@ -37,35 +39,35 @@ client.on("ready", async () => {
             text: "Please read carefully and react to gain access to the server!",
         });
 
-    await rulesChannel.send({ embeds: [rulesEmbed] });
+    const rulesMessage = await rulesChannel.send({ embeds: [rulesEmbed] });
+    await rulesMessage.react(REACTION_EMOJI);
 });
 
-// client.on("guildMemberAdd", async (member) => {
-//     const welcomeChannel = member.guild.channels.cache.get(
-//         Deno.env.get("WELCOME_CHANNEL_ID")!
-//     ) as TextChannel;
+client.on("guildMemberAdd", async (member) => {
+    const welcomeChannel = member.guild.channels.cache.get(
+        Deno.env.get("WELCOME_CHANNEL_ID")!
+    ) as TextChannel;
 
-//     const attachment = new AttachmentBuilder("images/banner.png", {
-//         name: "banner.png",
-//     });
+    const attachment = new AttachmentBuilder("images/banner.png", {
+        name: "banner.png",
+    });
 
-//     const welcomeEmbed = new EmbedBuilder()
-//         .setColor(0xffd4ec)
-//         .setTitle(`Welcome ${member.user.username}!`)
-//         .setDescription(
-//             `
-// Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
-// - Read the rules in <#${Deno.env.get("RULES_CHANNEL_ID")}>
-// - Collect your roles in <#${Deno.env.get("ROLES_CHANNEL_ID")}>
-// `
-//         )
-//         .setImage("attachment://banner.png")
-//         .setFooter({ text: "₍ᐢ. .ᐢ₎₍ᐢ. .ᐢ₎₍ᐢ. .ᐢ₎₍ᐢ. .ᐢ₎₍ᐢ. .ᐢ₎" });
+    const welcomeEmbed = new EmbedBuilder()
+        .setColor(0xffd4ec)
+        .setTitle(`Welcome ${member.user.username}!`)
+        .setDescription(
+            `
+Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
+- Read the rules in <#${Deno.env.get("RULES_CHANNEL_ID")}>
+- Collect your roles in <#${Deno.env.get("ROLES_CHANNEL_ID")}>
+`
+        )
+        .setImage("attachment://banner.png")
+        .setFooter({ text: "₍ᐢ. .ᐢ₎₍ᐢ. .ᐢ₎₍ᐢ. .ᐢ₎₍ᐢ. .ᐢ₎₍ᐢ. .ᐢ₎" });
 
-//     await welcomeChannel.send({ embeds: [welcomeEmbed], files: [attachment] });
-// });
+    await welcomeChannel.send({ embeds: [welcomeEmbed], files: [attachment] });
+});
 
-const REACTION_EMOJI = "✅";
 client.on("messageReactionAdd", async (reaction, user) => {
     if (reaction.emoji.name !== REACTION_EMOJI) return;
     if (user.bot) return;
