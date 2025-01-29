@@ -1,9 +1,5 @@
 import { Client, GatewayIntentBits, EmbedBuilder } from "discord.js";
 
-import * as dotenv from "dotenv";
-
-dotenv.config();
-
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -18,7 +14,7 @@ client.on("ready", () => {
 
 client.on("guildMemberAdd", async (member) => {
     const channel = member.guild.channels.cache.get(
-        process.env.WELCOME_CHANNEL_ID!
+        Deno.env.get("WELCOME_CHANNEL_ID")!
     );
 
     if (!channel?.isTextBased()) return;
@@ -42,4 +38,4 @@ client.on("guildMemberAdd", async (member) => {
     await channel.send({ embeds: [welcomeEmbed] });
 });
 
-client.login(process.env.TOKEN);
+client.login(Deno.env.get("TOKEN"));
