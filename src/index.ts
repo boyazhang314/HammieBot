@@ -11,6 +11,8 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessageReactions,
     ],
 });
 
@@ -26,11 +28,11 @@ client.on("ready", async () => {
         .setTitle("Hamster Care Guide (꜆ ՞︲⩊︲՞꜀)")
         .setDescription(
             `
-    1. Follow Discord TOS
-    2. Be kind and respectful of others
-    3. Do not rant, vent, or discuss potentially controversial topics
-    4. No NSFW
-    5. Have fun!
+1. Follow Discord TOS
+2. Be kind and respectful of others
+3. Do not rant, vent, or discuss potentially controversial topics
+4. No NSFW
+5. Have fun!
     `
         )
         .setFooter({
