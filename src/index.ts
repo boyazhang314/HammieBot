@@ -14,8 +14,6 @@ const client = new Client({
     ],
 });
 
-const REACTION_EMOJI = "✅";
-
 client.on("ready", () => {
     console.log(`Logged in as ${client.user?.tag}!`);
 
@@ -69,7 +67,6 @@ Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
 });
 
 client.on("messageReactionAdd", async (reaction, user) => {
-    if (reaction.emoji.name !== REACTION_EMOJI) return;
     if (user.bot) return;
 
     console.log("reaction");
