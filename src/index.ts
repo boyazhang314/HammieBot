@@ -19,8 +19,6 @@ client.on("guildMemberAdd", async (member) => {
 
     if (!channel?.isTextBased()) return;
 
-    await channel.send(`Welcome ${member} to the server!`);
-
     const welcomeEmbed = new EmbedBuilder()
         .setColor(0x00ff00)
         .setTitle(`Welcome ${member.user.username}!`)
@@ -28,8 +26,8 @@ client.on("guildMemberAdd", async (member) => {
         .setDescription(
             `
       Thanks for joining **${member.guild.name}**!
-      - Read the rules in <#rules-channel-id>
-      - Get roles in <#roles-channel-id>
+      - Read the rules in <#${Deno.env.get("RULES_CHANNEL_ID")}>
+      - Get roles in <#${Deno.env.get("ROLES_CHANNEL_ID")}>
       - Member count: ${member.guild.memberCount}
     `
         )
