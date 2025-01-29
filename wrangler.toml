@@ -1,0 +1,4 @@
+name = "hammie"
+main = "src/index.ts"
+compatibility_date = "2025-01-28"
+node_compat = true
