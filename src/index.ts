@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits, EmbedBuilder } from "discord.js";
 
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
@@ -42,4 +42,4 @@ client.on("guildMemberAdd", async (member) => {
     await channel.send({ embeds: [welcomeEmbed] });
 });
 
-client.login(process.env.BOT_TOKEN);
+client.login(process.env.TOKEN);
