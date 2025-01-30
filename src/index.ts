@@ -27,6 +27,13 @@ const OSHI_EMOJIS: { [key: string]: string[] } = {
     toya: ["1334575663411236934", "1334576815653781556"],
 };
 
+const EMOJI_TO_ROLE: { [key: string]: string } = {
+    "1334572383377428544": "1334576324785999972",
+    "1334573211685486622": "1334576463378120785",
+    "1334575281415000094": "1334576720899997727",
+    "1334575663411236934": "1334576815653781556",
+};
+
 const setupRulesChannel = async () => {
     const rulesChannel = client.channels.cache.get(
         Deno.env.get("RULES_CHANNEL_ID")!
@@ -160,22 +167,12 @@ client.on("messageReactionAdd", async (reaction, user) => {
     } else if (
         reaction.message.channel.id === Deno.env.get("ROLES_CHANNEL_ID")
     ) {
-        if (
-            !Object.values(OSHI_EMOJIS).some(
-                (arr) => arr[0] === reaction.emoji.id
-            )
-        ) {
+        if (!reaction.emoji.id || !(reaction.emoji.id in EMOJI_TO_ROLE)) {
             reaction.remove();
             return;
         }
 
-        const role = guild.roles.cache.get(
-            String(
-                Object.entries(OSHI_EMOJIS).find(
-                    ([_, arr]) => arr[0] === reaction.emoji.id
-                )?.[1][1]
-            )
-        );
+        const role = guild.roles.cache.get(EMOJI_TO_ROLE[reaction.emoji.id]);
 
         if (role && !member.roles.cache.has(role.id)) {
             await member.roles.add(role);
@@ -204,16 +201,28 @@ client.on("messageReactionRemove", async (reaction, user) => {
         }
     }
 
+    const guild = reaction.message.guild;
+    if (!guild) return;
+    const member = await guild.members.fetch(user.id);
+
     if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
         if (reaction.emoji.name !== REACTION_EMOJI) return;
 
-        const guild = reaction.message.guild;
-        if (!guild) return;
-
-        const member = await guild.members.fetch(user.id);
         const role = guild.roles.cache.get(
             String(Deno.env.get("NIBBLERS_ROLE_ID"))
         );
+
+        if (role && member.roles.cache.has(role.id)) {
+            await member.roles.remove(role);
+        }
+    } else if (
+        reaction.message.channel.id === Deno.env.get("ROLES_CHANNEL_ID")
+    ) {
+        if (!reaction.emoji.id || !(reaction.emoji.id in EMOJI_TO_ROLE)) {
+            return;
+        }
+
+        const role = guild.roles.cache.get(EMOJI_TO_ROLE[reaction.emoji.id]);
 
         if (role && member.roles.cache.has(role.id)) {
             await member.roles.remove(role);
