@@ -18,6 +18,8 @@ const client = new Client({
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
+const REACTION_EMOJI = "✅";
+
 client.on("ready", async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
 
@@ -44,7 +46,8 @@ client.on("ready", async () => {
                 text: "Please read carefully and react to gain access to the server!",
             });
 
-        await rulesChannel.send({ embeds: [rulesEmbed] });
+        const rulesMessage = await rulesChannel.send({ embeds: [rulesEmbed] });
+        await rulesMessage.react(REACTION_EMOJI);
     }
 });
 
@@ -74,10 +77,8 @@ Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
 });
 
 client.on("messageReactionAdd", async (reaction, user) => {
-    console.log("reaction");
     if (user.bot) return;
 
-    // Handle partial reactions
     if (reaction.partial) {
         try {
             await reaction.fetch();
@@ -87,7 +88,6 @@ client.on("messageReactionAdd", async (reaction, user) => {
         }
     }
 
-    // Handle partial messages
     if (reaction.message.partial) {
         try {
             await reaction.message.fetch();
@@ -97,21 +97,19 @@ client.on("messageReactionAdd", async (reaction, user) => {
         }
     }
 
+    if (reaction.emoji.name !== REACTION_EMOJI) return;
+
     if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
-        console.log("reaction in rules");
         const guild = reaction.message.guild;
         if (!guild) return;
 
         const member = await guild.members.fetch(user.id);
-        console.log(member);
         const role = guild.roles.cache.get(
             String(Deno.env.get("NIBBLERS_ROLE_ID"))
         );
-        console.log(role);
 
         if (role && !member.roles.cache.has(role.id)) {
             await member.roles.add(role);
-            console.log(`Added role to ${user.username}`);
         }
     }
 });
