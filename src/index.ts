@@ -50,8 +50,8 @@ const setupRulesChannel = async () => {
 
     const messages = await rulesChannel.messages.fetch({ limit: 1 });
 
-    const rules = new AttachmentBuilder("images/rules.png", {
-        name: "rules.png",
+    const rules = new AttachmentBuilder("images/sleep.png", {
+        name: "sleep.png",
     });
 
     if (messages.size === 0) {
@@ -70,7 +70,7 @@ const setupRulesChannel = async () => {
             .setFooter({
                 text: "Please read carefully and react to gain access to the server!",
             })
-            .setImage("attachment://rules.png");
+            .setImage("attachment://sleep.png");
 
         const rulesMessage = await rulesChannel.send({
             embeds: [rulesEmbed],
