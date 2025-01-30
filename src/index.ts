@@ -20,9 +20,14 @@ const client = new Client({
 
 const REACTION_EMOJI = "✅";
 
-client.on("ready", async () => {
-    console.log(`Logged in as ${client.user?.tag}!`);
+const OSHI_EMOJIS: { [key: string]: string[] } = {
+    kohane: ["1334572383377428544", "1334576324785999972"],
+    akito: ["1334573211685486622", "1334576463378120785"],
+    an: ["1334575281415000094", "1334576720899997727"],
+    toya: ["1334575663411236934", "1334576815653781556"],
+};
 
+const setupRulesChannel = async () => {
     const rulesChannel = client.channels.cache.get(
         Deno.env.get("RULES_CHANNEL_ID")!
     ) as TextChannel;
@@ -49,6 +54,44 @@ client.on("ready", async () => {
         const rulesMessage = await rulesChannel.send({ embeds: [rulesEmbed] });
         await rulesMessage.react(REACTION_EMOJI);
     }
+};
+
+const setupRolesChannel = async () => {
+    const rolesChannel = client.channels.cache.get(
+        Deno.env.get("ROLES_CHANNEL_ID")!
+    ) as TextChannel;
+
+    const messages = await rolesChannel.messages.fetch({ limit: 2 });
+
+    if (messages.size < 2) {
+        const oshiRolesEmbed = new EmbedBuilder()
+            .setColor(0xffd4ec)
+            .setTitle("Oshi Roles")
+            .setDescription(
+                `
+<:kohane:${OSHI_EMOJIS.kohane[0]}>
+<:an:${OSHI_EMOJIS.an[0]}>
+<:akito:${OSHI_EMOJIS.akito[0]}>
+<:toya:${OSHI_EMOJIS.toya[0]}>
+`
+            );
+
+        const oshiRolesMessage = await rolesChannel.send({
+            embeds: [oshiRolesEmbed],
+        });
+
+        await oshiRolesMessage.react(`<:kohane:${OSHI_EMOJIS.kohane[0]}>`);
+        await oshiRolesMessage.react(`<:an:${OSHI_EMOJIS.an[0]}>`);
+        await oshiRolesMessage.react(`<:akito:${OSHI_EMOJIS.akito[0]}>`);
+        await oshiRolesMessage.react(`<:toya:${OSHI_EMOJIS.toya[0]}>`);
+    }
+};
+
+client.on("ready", async () => {
+    console.log(`Logged in as ${client.user?.tag}!`);
+
+    await setupRulesChannel();
+    await setupRolesChannel();
 });
 
 client.on("guildMemberAdd", async (member) => {
@@ -98,9 +141,9 @@ client.on("messageReactionAdd", async (reaction, user) => {
     }
 
     if (reaction.emoji.name !== REACTION_EMOJI) {
-        reaction.remove()
-        return
-    };
+        reaction.remove();
+        return;
+    }
 
     if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
         const guild = reaction.message.guild;
