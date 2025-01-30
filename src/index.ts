@@ -19,6 +19,8 @@ const client = new Client({
 });
 
 const REACTION_EMOJI = "✅";
+const EMERGENCY_EMOJI = "🚨";
+const SCHEDULE_EMOJI = "📅";
 
 const OSHI_EMOJIS: { [key: string]: string[] } = {
     kohane: ["1334572383377428544", "1334576324785999972"],
@@ -27,12 +29,19 @@ const OSHI_EMOJIS: { [key: string]: string[] } = {
     toya: ["1334575663411236934", "1334576815653781556"],
 };
 
-const EMOJI_TO_ROLE: { [key: string]: string } = {
-    "1334572383377428544": "1334576324785999972",
-    "1334573211685486622": "1334576463378120785",
-    "1334575281415000094": "1334576720899997727",
-    "1334575663411236934": "1334576815653781556",
+const OSHI_EMOJI_TO_ROLE: { [key: string]: string } = {
+    "1334572383377428544": "1334576324785999972", // Kohane
+    "1334573211685486622": "1334576463378120785", // Akito
+    "1334575281415000094": "1334576720899997727", // An
+    "1334575663411236934": "1334576815653781556", // Toya
 };
+
+const FEEDER_EMOJI_TO_ROLE: { [key: string]: string } = {
+    [EMERGENCY_EMOJI]: "1334594991049146441",
+    [SCHEDULE_EMOJI]: "1334594936317935707",
+};
+
+const FEEDER_ROLE_ID = "1332858196523745384";
 
 const setupRulesChannel = async () => {
     const rulesChannel = client.channels.cache.get(
@@ -83,14 +92,31 @@ const setupRolesChannel = async () => {
 `
             );
 
+            const feederRolesEmbed = new EmbedBuilder()
+            .setColor(0xffd4ec)
+            .setTitle("Feeder Roles")
+            .setDescription(
+                `
+${SCHEDULE_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[SCHEDULE_EMOJI]}>
+${EMERGENCY_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[EMERGENCY_EMOJI]}>
+`
+            );
+
         const oshiRolesMessage = await rolesChannel.send({
             embeds: [oshiRolesEmbed],
         });
+
+        const feederRolesMessage = await rolesChannel.send({
+            embeds: [feederRolesEmbed]
+        })
 
         await oshiRolesMessage.react(`<:kohane:${OSHI_EMOJIS.kohane[0]}>`);
         await oshiRolesMessage.react(`<:an:${OSHI_EMOJIS.an[0]}>`);
         await oshiRolesMessage.react(`<:akito:${OSHI_EMOJIS.akito[0]}>`);
         await oshiRolesMessage.react(`<:toya:${OSHI_EMOJIS.toya[0]}>`);
+
+        await feederRolesMessage.react(SCHEDULE_EMOJI);
+        await feederRolesMessage.react(EMERGENCY_EMOJI);
     }
 };
 
@@ -167,15 +193,44 @@ client.on("messageReactionAdd", async (reaction, user) => {
     } else if (
         reaction.message.channel.id === Deno.env.get("ROLES_CHANNEL_ID")
     ) {
-        if (!reaction.emoji.id || !(reaction.emoji.id in EMOJI_TO_ROLE)) {
-            reaction.remove();
-            return;
-        }
+        if (reaction.message.embeds[0].title === "VBS Roles") {
+            if (
+                !reaction.emoji.id ||
+                !(reaction.emoji.id in OSHI_EMOJI_TO_ROLE)
+            ) {
+                reaction.remove();
+                return;
+            }
 
-        const role = guild.roles.cache.get(EMOJI_TO_ROLE[reaction.emoji.id]);
+            const role = guild.roles.cache.get(
+                OSHI_EMOJI_TO_ROLE[reaction.emoji.id]
+            );
 
-        if (role && !member.roles.cache.has(role.id)) {
-            await member.roles.add(role);
+            if (role && !member.roles.cache.has(role.id)) {
+                await member.roles.add(role);
+            }
+        } else {
+            if (
+                !reaction.emoji.name ||
+                !(reaction.emoji.name in FEEDER_EMOJI_TO_ROLE)
+            ) {
+                reaction.remove();
+                return;
+            }
+
+            const role = guild.roles.cache.get(
+                FEEDER_EMOJI_TO_ROLE[reaction.emoji.name]
+            );
+
+            const feeder_role = guild.roles.cache.get(FEEDER_ROLE_ID);
+
+            if (role && !member.roles.cache.has(role.id)) {
+                await member.roles.add(role);
+            }
+
+            if (feeder_role && !member.roles.cache.has(FEEDER_ROLE_ID)) {
+                await member.roles.add(feeder_role);
+            }
         }
     }
 });
@@ -218,14 +273,54 @@ client.on("messageReactionRemove", async (reaction, user) => {
     } else if (
         reaction.message.channel.id === Deno.env.get("ROLES_CHANNEL_ID")
     ) {
-        if (!reaction.emoji.id || !(reaction.emoji.id in EMOJI_TO_ROLE)) {
-            return;
-        }
+        if (reaction.message.embeds[0].title === "VBS Roles") {
+            if (
+                !reaction.emoji.id ||
+                !(reaction.emoji.id in OSHI_EMOJI_TO_ROLE)
+            ) {
+                return;
+            }
 
-        const role = guild.roles.cache.get(EMOJI_TO_ROLE[reaction.emoji.id]);
+            const role = guild.roles.cache.get(
+                OSHI_EMOJI_TO_ROLE[reaction.emoji.id]
+            );
 
-        if (role && member.roles.cache.has(role.id)) {
-            await member.roles.remove(role);
+            if (role && member.roles.cache.has(role.id)) {
+                await member.roles.remove(role);
+            }
+        } else {
+            if (
+                !reaction.emoji.name ||
+                !(reaction.emoji.name in FEEDER_EMOJI_TO_ROLE)
+            ) {
+                return;
+            }
+
+            const role = guild.roles.cache.get(
+                FEEDER_EMOJI_TO_ROLE[reaction.emoji.name]
+            );
+
+            const feeder_role = guild.roles.cache.get(FEEDER_ROLE_ID);
+
+            if (role && member.roles.cache.has(role.id)) {
+                await member.roles.remove(role);
+            }
+
+            if (feeder_role && member.roles.cache.has(FEEDER_ROLE_ID)) {
+                for (const [key, value] of Object.entries(
+                    FEEDER_EMOJI_TO_ROLE
+                )) {
+                    if (key !== reaction.emoji.name) {
+                        const other_role = guild.roles.cache.get(value);
+                        if (
+                            other_role &&
+                            !member.roles.cache.has(other_role.id)
+                        ) {
+                            await member.roles.remove(feeder_role);
+                        }
+                    }
+                }
+            }
         }
     }
 });
