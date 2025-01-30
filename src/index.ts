@@ -71,7 +71,7 @@ Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
 `
         )
         .setImage("attachment://banner.png")
-        .setFooter({ text: "₍ᐢ. .ᐢ₎ Have fun! ₍ᐢ. .ᐢ₎" });
+        .setFooter({ text: "₍ᐢ. .ᐢ₎" });
 
     await welcomeChannel.send({ embeds: [welcomeEmbed], files: [attachment] });
 });
@@ -97,7 +97,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
         }
     }
 
-    if (reaction.emoji.name !== REACTION_EMOJI) return;
+    if (reaction.emoji.name !== REACTION_EMOJI) {
+        reaction.remove()
+        return
+    };
 
     if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
         const guild = reaction.message.guild;
