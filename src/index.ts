@@ -50,6 +50,10 @@ const setupRulesChannel = async () => {
 
     const messages = await rulesChannel.messages.fetch({ limit: 1 });
 
+    const rules = new AttachmentBuilder("images/rules.png", {
+        name: "rules.png",
+    });
+
     if (messages.size === 0) {
         const rulesEmbed = new EmbedBuilder()
             .setColor(0xffd4ec)
@@ -65,9 +69,13 @@ const setupRulesChannel = async () => {
             )
             .setFooter({
                 text: "Please read carefully and react to gain access to the server!",
-            });
+            })
+            .setImage("attachment://rules.png");
 
-        const rulesMessage = await rulesChannel.send({ embeds: [rulesEmbed] });
+        const rulesMessage = await rulesChannel.send({
+            embeds: [rulesEmbed],
+            files: [rules],
+        });
         await rulesMessage.react(REACTION_EMOJI);
     }
 };
@@ -78,6 +86,13 @@ const setupRolesChannel = async () => {
     ) as TextChannel;
 
     const messages = await rolesChannel.messages.fetch({ limit: 2 });
+
+    const roles1 = new AttachmentBuilder("images/roles1.png", {
+        name: "roles1.png",
+    });
+    const roles2 = new AttachmentBuilder("images/roles2.png", {
+        name: "roles2.png",
+    });
 
     if (messages.size < 2) {
         const oshiRolesEmbed = new EmbedBuilder()
@@ -90,9 +105,10 @@ const setupRolesChannel = async () => {
 <:akito:${OSHI_EMOJIS.akito[0]}> <@&${OSHI_EMOJIS.akito[1]}>
 <:toya:${OSHI_EMOJIS.toya[0]}> <@&${OSHI_EMOJIS.toya[1]}>
 `
-            );
+            )
+            .setImage("attachment://roles1.png");
 
-            const feederRolesEmbed = new EmbedBuilder()
+        const feederRolesEmbed = new EmbedBuilder()
             .setColor(0xffd4ec)
             .setTitle("Feeder Roles")
             .setDescription(
@@ -100,15 +116,18 @@ const setupRolesChannel = async () => {
 ${SCHEDULE_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[SCHEDULE_EMOJI]}>
 ${EMERGENCY_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[EMERGENCY_EMOJI]}>
 `
-            );
+            )
+            .setImage("attachment://roles2.png");
 
         const oshiRolesMessage = await rolesChannel.send({
             embeds: [oshiRolesEmbed],
+            files: [roles1],
         });
 
         const feederRolesMessage = await rolesChannel.send({
-            embeds: [feederRolesEmbed]
-        })
+            embeds: [feederRolesEmbed],
+            files: [roles2],
+        });
 
         await oshiRolesMessage.react(`<:kohane:${OSHI_EMOJIS.kohane[0]}>`);
         await oshiRolesMessage.react(`<:an:${OSHI_EMOJIS.an[0]}>`);
