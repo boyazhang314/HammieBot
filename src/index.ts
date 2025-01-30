@@ -117,4 +117,42 @@ client.on("messageReactionAdd", async (reaction, user) => {
     }
 });
 
+client.on("messageReactionRemove", async (reaction, user) => {
+    if (user.bot) return;
+
+    if (reaction.partial) {
+        try {
+            await reaction.fetch();
+        } catch (error) {
+            console.error("Failed to fetch reaction:", error);
+            return;
+        }
+    }
+
+    if (reaction.message.partial) {
+        try {
+            await reaction.message.fetch();
+        } catch (error) {
+            console.error("Failed to fetch message:", error);
+            return;
+        }
+    }
+
+    if (reaction.emoji.name !== REACTION_EMOJI) return;
+
+    if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
+        const guild = reaction.message.guild;
+        if (!guild) return;
+
+        const member = await guild.members.fetch(user.id);
+        const role = guild.roles.cache.get(
+            String(Deno.env.get("NIBBLERS_ROLE_ID"))
+        );
+
+        if (role && member.roles.cache.has(role.id)) {
+            await member.roles.remove(role);
+        }
+    }
+});
+
 client.login(Deno.env.get("TOKEN"));
