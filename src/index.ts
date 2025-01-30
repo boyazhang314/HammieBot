@@ -117,7 +117,8 @@ ${SCHEDULE_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[SCHEDULE_EMOJI]}>
 ${EMERGENCY_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[EMERGENCY_EMOJI]}>
 `
             )
-            .setImage("attachment://roles2.png");
+            .setImage("attachment://roles2.png")
+            .setFooter({ text: "Come run in the hamster wheel!" });
 
         const oshiRolesMessage = await rolesChannel.send({
             embeds: [oshiRolesEmbed],
@@ -165,8 +166,7 @@ Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
 - Collect your roles in <#${Deno.env.get("ROLES_CHANNEL_ID")}>
 `
         )
-        .setImage("attachment://banner.png")
-        .setFooter({ text: "₍ᐢ. .ᐢ₎" });
+        .setImage("attachment://banner.png");
 
     await welcomeChannel.send({ embeds: [welcomeEmbed], files: [attachment] });
 });
