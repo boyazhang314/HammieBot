@@ -25,23 +25,27 @@ client.on("ready", async () => {
         Deno.env.get("RULES_CHANNEL_ID")!
     ) as TextChannel;
 
-    const rulesEmbed = new EmbedBuilder()
-        .setColor(0xffd4ec)
-        .setTitle("Hamster Care Guide (꜆ ՞︲⩊︲՞꜀)")
-        .setDescription(
-            `
+    const messages = await rulesChannel.messages.fetch({ limit: 1 });
+
+    if (messages.size === 0) {
+        const rulesEmbed = new EmbedBuilder()
+            .setColor(0xffd4ec)
+            .setTitle("Hamster Care Guide (꜆ ՞︲⩊︲՞꜀)")
+            .setDescription(
+                `
 1. Follow Discord TOS
 2. Be kind and respectful of others
 3. Do not rant, vent, or discuss potentially controversial topics
 4. No NSFW
 5. Have fun!
     `
-        )
-        .setFooter({
-            text: "Please read carefully and react to gain access to the server!",
-        });
+            )
+            .setFooter({
+                text: "Please read carefully and react to gain access to the server!",
+            });
 
-    await rulesChannel.send({ embeds: [rulesEmbed] });
+        await rulesChannel.send({ embeds: [rulesEmbed] });
+    }
 });
 
 client.on("guildMemberAdd", async (member) => {
