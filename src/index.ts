@@ -143,11 +143,13 @@ ${EMERGENCY_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[EMERGENCY_EMOJI]}>
 client.on("ready", async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
 
-    // await setupRulesChannel();
-    // await setupRolesChannel();
+    await setupRulesChannel();
+    await setupRolesChannel();
 });
 
 client.on("guildMemberAdd", async (member) => {
+    if (member.user.bot) return;
+
     const welcomeChannel = member.guild.channels.cache.get(
         Deno.env.get("WELCOME_CHANNEL_ID")!
     ) as TextChannel;
