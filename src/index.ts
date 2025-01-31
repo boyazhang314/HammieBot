@@ -76,7 +76,7 @@ const setupRulesChannel = async () => {
             embeds: [rulesEmbed],
             files: [rules],
         });
-        await rulesMessage.react(REACTION_EMOJI);
+        // await rulesMessage.react(REACTION_EMOJI);
     }
 };
 
