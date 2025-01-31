@@ -130,13 +130,13 @@ ${EMERGENCY_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[EMERGENCY_EMOJI]}>
             files: [roles2],
         });
 
-        await oshiRolesMessage.react(`<:kohane:${OSHI_EMOJIS.kohane[0]}>`);
-        await oshiRolesMessage.react(`<:an:${OSHI_EMOJIS.an[0]}>`);
-        await oshiRolesMessage.react(`<:akito:${OSHI_EMOJIS.akito[0]}>`);
-        await oshiRolesMessage.react(`<:toya:${OSHI_EMOJIS.toya[0]}>`);
+        // await oshiRolesMessage.react(`<:kohane:${OSHI_EMOJIS.kohane[0]}>`);
+        // await oshiRolesMessage.react(`<:an:${OSHI_EMOJIS.an[0]}>`);
+        // await oshiRolesMessage.react(`<:akito:${OSHI_EMOJIS.akito[0]}>`);
+        // await oshiRolesMessage.react(`<:toya:${OSHI_EMOJIS.toya[0]}>`);
 
-        await feederRolesMessage.react(SCHEDULE_EMOJI);
-        await feederRolesMessage.react(EMERGENCY_EMOJI);
+        // await feederRolesMessage.react(SCHEDULE_EMOJI);
+        // await feederRolesMessage.react(EMERGENCY_EMOJI);
     }
 };
 
