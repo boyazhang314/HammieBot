@@ -143,8 +143,8 @@ ${EMERGENCY_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[EMERGENCY_EMOJI]}>
 client.on("ready", async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
 
-    await setupRulesChannel();
-    await setupRolesChannel();
+    // await setupRulesChannel();
+    // await setupRolesChannel();
 });
 
 client.on("guildMemberAdd", async (member) => {
