@@ -143,8 +143,8 @@ ${EMERGENCY_EMOJI} <@&${FEEDER_EMOJI_TO_ROLE[EMERGENCY_EMOJI]}>
 client.on("ready", async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
 
-    await setupRulesChannel();
-    await setupRolesChannel();
+    // await setupRulesChannel();
+    // await setupRolesChannel();
 });
 
 client.on("guildMemberAdd", async (member) => {
@@ -171,177 +171,177 @@ Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
     await welcomeChannel.send({ embeds: [welcomeEmbed], files: [attachment] });
 });
 
-client.on("messageReactionAdd", async (reaction, user) => {
-    if (user.bot) return;
+// client.on("messageReactionAdd", async (reaction, user) => {
+//     if (user.bot) return;
 
-    if (reaction.partial) {
-        try {
-            await reaction.fetch();
-        } catch (error) {
-            console.error("Failed to fetch reaction:", error);
-            return;
-        }
-    }
+//     if (reaction.partial) {
+//         try {
+//             await reaction.fetch();
+//         } catch (error) {
+//             console.error("Failed to fetch reaction:", error);
+//             return;
+//         }
+//     }
 
-    if (reaction.message.partial) {
-        try {
-            await reaction.message.fetch();
-        } catch (error) {
-            console.error("Failed to fetch message:", error);
-            return;
-        }
-    }
+//     if (reaction.message.partial) {
+//         try {
+//             await reaction.message.fetch();
+//         } catch (error) {
+//             console.error("Failed to fetch message:", error);
+//             return;
+//         }
+//     }
 
-    const guild = reaction.message.guild;
-    if (!guild) return;
-    const member = await guild.members.fetch(user.id);
+//     const guild = reaction.message.guild;
+//     if (!guild) return;
+//     const member = await guild.members.fetch(user.id);
 
-    if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
-        if (reaction.emoji.name !== REACTION_EMOJI) {
-            reaction.remove();
-            return;
-        }
+//     if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
+//         if (reaction.emoji.name !== REACTION_EMOJI) {
+//             reaction.remove();
+//             return;
+//         }
 
-        const role = guild.roles.cache.get(
-            String(Deno.env.get("NIBBLERS_ROLE_ID"))
-        );
+//         const role = guild.roles.cache.get(
+//             String(Deno.env.get("NIBBLERS_ROLE_ID"))
+//         );
 
-        if (role && !member.roles.cache.has(role.id)) {
-            await member.roles.add(role);
-        }
-    } else if (
-        reaction.message.channel.id === Deno.env.get("ROLES_CHANNEL_ID")
-    ) {
-        if (reaction.message.embeds[0].title === "VBS Roles") {
-            if (
-                !reaction.emoji.id ||
-                !(reaction.emoji.id in OSHI_EMOJI_TO_ROLE)
-            ) {
-                reaction.remove();
-                return;
-            }
+//         if (role && !member.roles.cache.has(role.id)) {
+//             await member.roles.add(role);
+//         }
+//     } else if (
+//         reaction.message.channel.id === Deno.env.get("ROLES_CHANNEL_ID")
+//     ) {
+//         if (reaction.message.embeds[0].title === "VBS Roles") {
+//             if (
+//                 !reaction.emoji.id ||
+//                 !(reaction.emoji.id in OSHI_EMOJI_TO_ROLE)
+//             ) {
+//                 reaction.remove();
+//                 return;
+//             }
 
-            const role = guild.roles.cache.get(
-                OSHI_EMOJI_TO_ROLE[reaction.emoji.id]
-            );
+//             const role = guild.roles.cache.get(
+//                 OSHI_EMOJI_TO_ROLE[reaction.emoji.id]
+//             );
 
-            if (role && !member.roles.cache.has(role.id)) {
-                await member.roles.add(role);
-            }
-        } else {
-            if (
-                !reaction.emoji.name ||
-                !(reaction.emoji.name in FEEDER_EMOJI_TO_ROLE)
-            ) {
-                reaction.remove();
-                return;
-            }
+//             if (role && !member.roles.cache.has(role.id)) {
+//                 await member.roles.add(role);
+//             }
+//         } else {
+//             if (
+//                 !reaction.emoji.name ||
+//                 !(reaction.emoji.name in FEEDER_EMOJI_TO_ROLE)
+//             ) {
+//                 reaction.remove();
+//                 return;
+//             }
 
-            const role = guild.roles.cache.get(
-                FEEDER_EMOJI_TO_ROLE[reaction.emoji.name]
-            );
+//             const role = guild.roles.cache.get(
+//                 FEEDER_EMOJI_TO_ROLE[reaction.emoji.name]
+//             );
 
-            const feeder_role = guild.roles.cache.get(FEEDER_ROLE_ID);
+//             const feeder_role = guild.roles.cache.get(FEEDER_ROLE_ID);
 
-            if (role && !member.roles.cache.has(role.id)) {
-                await member.roles.add(role);
-            }
+//             if (role && !member.roles.cache.has(role.id)) {
+//                 await member.roles.add(role);
+//             }
 
-            if (feeder_role && !member.roles.cache.has(FEEDER_ROLE_ID)) {
-                await member.roles.add(feeder_role);
-            }
-        }
-    }
-});
+//             if (feeder_role && !member.roles.cache.has(FEEDER_ROLE_ID)) {
+//                 await member.roles.add(feeder_role);
+//             }
+//         }
+//     }
+// });
 
-client.on("messageReactionRemove", async (reaction, user) => {
-    if (user.bot) return;
+// client.on("messageReactionRemove", async (reaction, user) => {
+//     if (user.bot) return;
 
-    if (reaction.partial) {
-        try {
-            await reaction.fetch();
-        } catch (error) {
-            console.error("Failed to fetch reaction:", error);
-            return;
-        }
-    }
+//     if (reaction.partial) {
+//         try {
+//             await reaction.fetch();
+//         } catch (error) {
+//             console.error("Failed to fetch reaction:", error);
+//             return;
+//         }
+//     }
 
-    if (reaction.message.partial) {
-        try {
-            await reaction.message.fetch();
-        } catch (error) {
-            console.error("Failed to fetch message:", error);
-            return;
-        }
-    }
+//     if (reaction.message.partial) {
+//         try {
+//             await reaction.message.fetch();
+//         } catch (error) {
+//             console.error("Failed to fetch message:", error);
+//             return;
+//         }
+//     }
 
-    const guild = reaction.message.guild;
-    if (!guild) return;
-    const member = await guild.members.fetch(user.id);
+//     const guild = reaction.message.guild;
+//     if (!guild) return;
+//     const member = await guild.members.fetch(user.id);
 
-    if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
-        if (reaction.emoji.name !== REACTION_EMOJI) return;
+//     if (reaction.message.channel.id === Deno.env.get("RULES_CHANNEL_ID")) {
+//         if (reaction.emoji.name !== REACTION_EMOJI) return;
 
-        const role = guild.roles.cache.get(
-            String(Deno.env.get("NIBBLERS_ROLE_ID"))
-        );
+//         const role = guild.roles.cache.get(
+//             String(Deno.env.get("NIBBLERS_ROLE_ID"))
+//         );
 
-        if (role && member.roles.cache.has(role.id)) {
-            await member.roles.remove(role);
-        }
-    } else if (
-        reaction.message.channel.id === Deno.env.get("ROLES_CHANNEL_ID")
-    ) {
-        if (reaction.message.embeds[0].title === "VBS Roles") {
-            if (
-                !reaction.emoji.id ||
-                !(reaction.emoji.id in OSHI_EMOJI_TO_ROLE)
-            ) {
-                return;
-            }
+//         if (role && member.roles.cache.has(role.id)) {
+//             await member.roles.remove(role);
+//         }
+//     } else if (
+//         reaction.message.channel.id === Deno.env.get("ROLES_CHANNEL_ID")
+//     ) {
+//         if (reaction.message.embeds[0].title === "VBS Roles") {
+//             if (
+//                 !reaction.emoji.id ||
+//                 !(reaction.emoji.id in OSHI_EMOJI_TO_ROLE)
+//             ) {
+//                 return;
+//             }
 
-            const role = guild.roles.cache.get(
-                OSHI_EMOJI_TO_ROLE[reaction.emoji.id]
-            );
+//             const role = guild.roles.cache.get(
+//                 OSHI_EMOJI_TO_ROLE[reaction.emoji.id]
+//             );
 
-            if (role && member.roles.cache.has(role.id)) {
-                await member.roles.remove(role);
-            }
-        } else {
-            if (
-                !reaction.emoji.name ||
-                !(reaction.emoji.name in FEEDER_EMOJI_TO_ROLE)
-            ) {
-                return;
-            }
+//             if (role && member.roles.cache.has(role.id)) {
+//                 await member.roles.remove(role);
+//             }
+//         } else {
+//             if (
+//                 !reaction.emoji.name ||
+//                 !(reaction.emoji.name in FEEDER_EMOJI_TO_ROLE)
+//             ) {
+//                 return;
+//             }
 
-            const role = guild.roles.cache.get(
-                FEEDER_EMOJI_TO_ROLE[reaction.emoji.name]
-            );
+//             const role = guild.roles.cache.get(
+//                 FEEDER_EMOJI_TO_ROLE[reaction.emoji.name]
+//             );
 
-            const feeder_role = guild.roles.cache.get(FEEDER_ROLE_ID);
+//             const feeder_role = guild.roles.cache.get(FEEDER_ROLE_ID);
 
-            if (role && member.roles.cache.has(role.id)) {
-                await member.roles.remove(role);
-            }
+//             if (role && member.roles.cache.has(role.id)) {
+//                 await member.roles.remove(role);
+//             }
 
-            if (feeder_role && member.roles.cache.has(FEEDER_ROLE_ID)) {
-                for (const [key, value] of Object.entries(
-                    FEEDER_EMOJI_TO_ROLE
-                )) {
-                    if (key !== reaction.emoji.name) {
-                        const other_role = guild.roles.cache.get(value);
-                        if (
-                            other_role &&
-                            !member.roles.cache.has(other_role.id)
-                        ) {
-                            await member.roles.remove(feeder_role);
-                        }
-                    }
-                }
-            }
-        }
-    }
-});
+//             if (feeder_role && member.roles.cache.has(FEEDER_ROLE_ID)) {
+//                 for (const [key, value] of Object.entries(
+//                     FEEDER_EMOJI_TO_ROLE
+//                 )) {
+//                     if (key !== reaction.emoji.name) {
+//                         const other_role = guild.roles.cache.get(value);
+//                         if (
+//                             other_role &&
+//                             !member.roles.cache.has(other_role.id)
+//                         ) {
+//                             await member.roles.remove(feeder_role);
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// });
 
 client.login(Deno.env.get("TOKEN"));
