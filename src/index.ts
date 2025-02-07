@@ -147,31 +147,31 @@ client.on("ready", async () => {
     // await setupRolesChannel();
 });
 
-client.on("guildMemberAdd", async (member) => {
-    if (member.user.bot) return;
+// client.on("guildMemberAdd", async (member) => {
+//     if (member.user.bot) return;
 
-    const welcomeChannel = member.guild.channels.cache.get(
-        Deno.env.get("WELCOME_CHANNEL_ID")!
-    ) as TextChannel;
+//     const welcomeChannel = member.guild.channels.cache.get(
+//         Deno.env.get("WELCOME_CHANNEL_ID")!
+//     ) as TextChannel;
 
-    const attachment = new AttachmentBuilder("images/banner.png", {
-        name: "banner.png",
-    });
+//     const attachment = new AttachmentBuilder("images/banner.png", {
+//         name: "banner.png",
+//     });
 
-    const welcomeEmbed = new EmbedBuilder()
-        .setColor(0xffd4ec)
-        .setTitle(`Welcome ${member.user.username}!`)
-        .setDescription(
-            `
-Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
-- Read the rules in <#${Deno.env.get("RULES_CHANNEL_ID")}>
-- Collect your roles in <#${Deno.env.get("ROLES_CHANNEL_ID")}>
-`
-        )
-        .setImage("attachment://banner.png");
+//     const welcomeEmbed = new EmbedBuilder()
+//         .setColor(0xffd4ec)
+//         .setTitle(`Welcome ${member.user.username}!`)
+//         .setDescription(
+//             `
+// Thanks for joining Hamster Wheel ⪩ •⩊• ⪨
+// - Read the rules in <#${Deno.env.get("RULES_CHANNEL_ID")}>
+// - Collect your roles in <#${Deno.env.get("ROLES_CHANNEL_ID")}>
+// `
+//         )
+//         .setImage("attachment://banner.png");
 
-    await welcomeChannel.send({ embeds: [welcomeEmbed], files: [attachment] });
-});
+//     await welcomeChannel.send({ embeds: [welcomeEmbed], files: [attachment] });
+// });
 
 // client.on("messageReactionAdd", async (reaction, user) => {
 //     if (user.bot) return;
